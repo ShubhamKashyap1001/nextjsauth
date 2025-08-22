@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
+import { log } from "node:console";
 
-export async function connection() {
+export async function connect() {
     try {
         // const uri = process.env.MONGODB_URI;
         // if (!uri) {
@@ -14,6 +15,12 @@ export async function connection() {
             console.log("MongoDB connected");
             
         })
+
+        connection.on('error',(err) => {
+            console.log("MongoDb connection Error, Please ensure that DB is up or running : " + err)
+            process.exit();
+        })
+
     } catch (error) {
         console.log("Something went wrong in connecting the DB"+error);
         
