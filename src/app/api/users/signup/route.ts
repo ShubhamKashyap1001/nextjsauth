@@ -3,7 +3,7 @@ import bcryptjs from 'bcryptjs';
 import User from '@/model/usermodel';
 import { NextRequest,NextResponse } from 'next/server';
 import { sendMail } from '@/helper/mailer';
-import { error } from 'console';
+
 
 connect();
 
@@ -25,7 +25,7 @@ export async function POST(request:NextRequest) {
         const salt = await bcryptjs.genSalt(10)
         const hashedPassword = await bcryptjs.hash(password,salt)
 
-        const newUser = new user({
+        const newUser = new User({
             username,
             email,
             password : hashedPassword
