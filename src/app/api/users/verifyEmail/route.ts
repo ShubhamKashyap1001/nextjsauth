@@ -21,7 +21,7 @@ export async function POST(request: NextRequest){
         }
         console.log(user);
 
-        user.isVarified = true;
+        user.isVerified = true;
         user.verifyToken = undefined;
         user.verifyTokenExpire = undefined;
 
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest){
 
         return NextResponse.json(
             {
-                message : "Email varification successfully",
+                message : "Email varification successful",
                 success : true
 
             },
