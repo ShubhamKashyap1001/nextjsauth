@@ -1,42 +1,39 @@
 
-import {connect} from '@/dbConfig/dbConfig';
+import { connect } from "@/dbConfig/dbConfig";
 import User from "@/model/usermodel";
-import { NextRequest,NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 connect();
 
-export async function POST(request: NextRequest){
-    try {
-        const reqBody = await request.json();
-        const {token} = reqBody
-        console.log(token);
-        
-        const user = await User.findOne({verifyToken : token , verifyTokenExpire : {$gt : Date.now()}})
+export async function POST(request: NextRequest) {
+  try {
+    const reqBody = await request.json();
+    const { token } = reqBody;
 
-        if(!user){
-            return NextResponse.json({
-                error : "Invalid Email Verification"
-            },
-            {status : 400})
-        }
-        console.log(user);
+    console.log("Verification token:", token);
 
-        user.isVerified = true;
-        user.verifyToken = undefined;
-        user.verifyTokenExpire = undefined;
+    const user = await User.findOne({
+      verifyToken: token,
+      verifyTokenExpire: { $gt: Date.now() },
+    });
 
-        await user.save();
-
-        return NextResponse.json(
-            {
-                message : "Email varification successful",
-                success : true
-
-            },
-            {status : 200}
-        )
-        
-    } catch (error : any) {
-        return NextResponse.json({error : error.message} , {status : 500})
+    if (!user) {
+      return NextResponse.json(
+        { error: "Invalid or expired email verification token" },
+        { status: 400 }
+      );
     }
+
+    user.isVerified = true;
+    user.verifyToken = undefined;
+    user.verifyTokenExpire = undefined;
+    await user.save();
+
+    return NextResponse.json(
+      { message: "Email verification successful", success: true },
+      { status: 200 }
+    );
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }

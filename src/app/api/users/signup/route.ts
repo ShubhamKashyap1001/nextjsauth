@@ -3,6 +3,7 @@ import bcryptjs from 'bcryptjs';
 import User from '@/model/usermodel';
 import { NextRequest,NextResponse } from 'next/server';
 import { sendMail } from '@/helper/mailer';
+import crypto from "crypto";
 
 
 connect();
@@ -30,6 +31,13 @@ export async function POST(request:NextRequest) {
             email,
             password : hashedPassword
         })
+
+        //generate plain token (NOT bcrypt)
+        const token = crypto.randomBytes(32).toString("hex");
+        newUser.verifyToken = token;
+        newUser.verifyTokenExpire = Date.now() + 3600000; // 1 hour
+
+        //await newUser.save();
 
         const savedUser = await newUser.save()
         console.log(savedUser);
