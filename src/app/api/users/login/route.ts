@@ -3,7 +3,6 @@ import User from '@/model/usermodel';
 import { NextRequest , NextResponse } from 'next/server';
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken'
-import { error } from 'console';
 
 connect();
 
@@ -28,6 +27,12 @@ export async function POST (request : NextRequest){
         }
 
         console.log(user);
+
+        user.isLoggedIn = true;
+        await user.save();
+
+        console.log("After:", user.isLoggedIn);
+        
         
         //create tokenData
         const tokenData = {
@@ -46,6 +51,8 @@ export async function POST (request : NextRequest){
             }
         )
 
+        
+
         //cookies send karne ke liye 
         response.cookies.set("token", token,{
             httpOnly : true         //cookies abhi server manipulate kar sakta hai user ko browser mai dikhta hai par usko manupulate nhi kar sakta hai 
@@ -53,7 +60,7 @@ export async function POST (request : NextRequest){
 
         return response;
 
-    } catch (error  : any) {
+    } catch (error : any) {
         return NextResponse.json({
             error : error.message
         },{status : 500})
