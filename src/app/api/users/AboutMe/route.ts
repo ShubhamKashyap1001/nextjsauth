@@ -10,6 +10,12 @@ export async function POST(request : NextRequest){
     const userId = await getDataFromToken(request)
     const user = await User.findOne({_id: userId}).select("-password")
 
+    console.log("userId : ",userId);
+    console.log(typeof userId);
+
+    console.log("user : ",user);
+    console.log(typeof user);
+    
     //check if there is no user
     return NextResponse.json({
         message : "User found",
